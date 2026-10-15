@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF5F8">
+<title>KwikKeys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="dots" aria-hidden="true"></canvas>
+<header class="topbar">
+  <button id="menuBtn" class="icon-btn" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+  <a href="#" class="brand" id="brandHome"><span class="logo" aria-hidden="true"></span><span>KwikKeys</span></a>
+</header>
+<div id="scrim"></div>
+<aside id="sidebar" aria-label="Menu">
+  <a href="#" class="brand side-brand"><span class="logo" aria-hidden="true"></span><span>KwikKeys</span></a>
+  <nav>
+    <button class="nav-link" data-view="dashboard">Take Test</button>
+    <button class="nav-link" data-view="streak">Streak</button>
+    <button class="nav-link" data-view="howto">How to Play</button>
+  </nav>
+  <button class="nav-link profile-pin" data-view="profile"><span class="avatar" id="sideAvatar"></span><span id="sideName">Guest</span></button>
+</aside>
+
+<main>
+  <section class="view" id="view-landing" hidden>
+    <h1 class="hero"><span id="typed"></span><i class="tcaret"></i></h1>
+    <p id="heroGreeting" class="sub" hidden></p>
+    <p id="heroSub" class="sub">Measure your typing speed and accuracy with a cozy, focused challenge.</p>
+    <div id="guestActions" class="actions">
+      <button class="btn" data-auth="signin">Sign In</button>
+      <button class="btn ghost" data-auth="signup">Sign Up</button>
+    </div>
+    <div id="userActions" class="actions" hidden>
+      <button class="btn" id="toDash">Go to Dashboard &rarr;</button>
+      <button class="btn ghost" id="signOut">Sign Out</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-dashboard" hidden>
+    <h2 class="center" id="dashHello">Welcome</h2>
+    <div class="center"><button class="btn big" id="takeTest">Take Test</button></div>
+    <div class="card controls">
+      <div><p class="label">Difficulty</p><div class="pills" id="diffPills">
+        <button class="pill" data-diff="Easy">Easy</button><button class="pill" data-diff="Medium">Medium</button><button class="pill" data-diff="Hard">Hard</button></div></div>
+      <div><p class="label">Duration</p><div class="pills" id="durPills">
+        <button class="pill" data-dur="15">15s</button><button class="pill" data-dur="30">30s</button><button class="pill" data-dur="60">60s</button></div></div>
+    </div>
+    <div class="card practice"><div><p class="label">Practice timer</p><p class="muted">Choose how long to practice. A new paragraph arrives whenever you near the end, until the time is up or you stop.</p><p class="error" id="practiceErr" role="alert"></p></div>
+      <div class="practice-ctl">
+        <label>Practice time<select id="practiceSel"><option value="15">15 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="120">2 hours</option><option value="custom">Custom</option></select></label>
+        <label id="customWrap" hidden>Minutes<input id="practiceCustom" type="number" min="1" max="600" step="1" placeholder="e.g. 90"></label>
+        <button class="btn" id="startPractice">Start Practice</button>
+      </div></div>
+    <div class="grid2">
+      <div class="card"><p class="label">Target WPM</p><p class="big-num" id="targetWpm">30</p>
+        <div class="bar"><i id="targetFill"></i></div><p class="muted" id="targetNote"></p></div>
+      <div class="card"><p class="label">Daily practice goal</p><p class="big-num" id="goalNum">0 / 3</p>
+        <div class="bar"><i id="goalFill"></i></div><p class="muted">Complete 3 tests today.</p></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-test" hidden>
+    <div class="hud card">
+      <div class="stat"><b id="hudWpm">0</b><span>WPM</span></div>
+      <div class="stat"><b id="hudAcc">100%</b><span>Accuracy</span></div>
+      <div class="stat"><b id="hudTime">30s</b><span id="hudMode">Easy</span></div>
+      <div class="bar wide"><i id="barFill"></i></div>
+    </div>
+    <div id="arena" class="card">
+      <div class="words" id="words"><div id="chars"><span id="caret"></span></div><input id="kbd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Type here"></div>
+      <p class="tap-hint">Tap the text to open your keyboard.</p>
+      <div class="arena-foot"><p class="muted">The timer starts on your first keypress.</p><div class="row-btns"><button class="btn ghost" id="restartBtn">Restart</button></div></div>
+    </div>
+    <div class="test-bar" id="testBar">
+      <button class="btn ghost" id="backBtn">Back</button>
+      <button class="btn ghost" id="pauseBtn" disabled>Pause Test</button>
+      <button class="btn" id="stopBtn">Stop Test</button>
+    </div>
+    <div id="results" class="card results" hidden>
+      <span class="badge" id="bestBadge" hidden>NEW BEST!</span>
+      <p class="label">Final speed</p><p class="huge" id="resWpm">0</p><p class="muted">words per minute</p>
+      <div class="grid3"><div><b id="resAcc">0%</b><span>Accuracy</span></div><div><b id="resChars">0</b><span>Correct characters</span></div><div><b id="resMode">-</b><span>Mode</span></div></div>
+      <div class="actions"><button class="btn" id="againBtn">Try Again</button><button class="btn ghost" id="backDash">Dashboard</button></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-streak" hidden>
+    <h2>Streak</h2>
+    <div class="grid2">
+      <div class="card"><p class="label">Current streak</p><p class="big-num" id="streakNum">0 days</p><p class="muted">Days in a row with at least one test.</p></div>
+      <div class="card"><p class="label">Tests today</p><p class="big-num" id="todayNum">0</p><p class="muted" id="streakNote"></p></div>
+    </div>
+    <div class="card table-wrap"><table><thead><tr><th>Date</th><th>Mode</th><th>Duration</th><th>WPM</th><th>Accuracy</th><th>Status</th></tr></thead><tbody id="histBody"></tbody></table>
+      <p class="muted empty" id="histEmpty" hidden>No tests yet. Take your first test to start a streak.</p></div>
+  </section>
+
+  <section class="view" id="view-howto" hidden>
+    <h2>How to Play</h2>
+    <div class="card prose">
+      <p>Pick a difficulty and duration, then type the text shown. The clock starts on your first keypress.</p>
+      <ul><li>Pink characters are correct; red-highlighted characters are mistakes.</li>
+      <li>Use Backspace to fix a mistake, or keep going.</li>
+      <li>WPM counts correct characters divided by five, per minute.</li>
+      <li>Accuracy is correct keystrokes out of all keystrokes.</li>
+      <li>Practice Timer runs for the time you choose, with new paragraphs arriving until it ends or you press Stop Test.</li></ul>
+      <p class="label">Keyboard shortcuts</p>
+      <table class="keys"><tr><td><kbd>Esc</kbd></td><td>Reset the current test</td></tr>
+      <tr><td><kbd>Tab</kbd> + <kbd>Enter</kbd></td><td>Quick restart</td></tr>
+      <tr><td><kbd>Backspace</kbd></td><td>Delete the previous character</td></tr></table>
+    </div>
+  </section>
+
+  <section class="view" id="view-profile" hidden>
+    <h2>Profile</h2>
+    <div class="card profile">
+      <span class="avatar xl" id="profAvatar"></span>
+      <div><h3 id="profName">-</h3><p class="muted" id="profJoined"></p>
+        <div class="row-btns"><button class="btn small" id="editBtn">Edit Profile</button>
+        <label class="btn ghost small" for="avatarInput">Upload picture</label>
+        <button class="btn ghost small" id="removeAvatar">Remove picture</button></div>
+        <input type="file" id="avatarInput" accept="image/*" hidden></div>
+    </div>
+    <form class="card editcard" id="editForm" autocomplete="off" hidden>
+      <h3>Edit profile</h3>
+      <label>Username<input id="editUser" required minlength="3" maxlength="20"></label>
+      <label>New password (leave blank to keep current)<input id="editPass" type="password" minlength="4"></label>
+      <p class="error" id="editErr" role="alert"></p>
+      <div class="row-btns"><button class="btn small" type="submit">Save changes</button><button class="btn ghost small" type="button" id="editCancel">Cancel</button></div>
+    </form>
+    <div class="grid2">
+      <div class="card"><p class="label">Best WPM</p><p class="big-num" id="profBest">0</p></div>
+      <div class="card"><p class="label">Total tests</p><p class="big-num" id="profTotal">0</p></div>
+    </div>
+  </section>
+</main>
+
+<div id="modal" class="modal" hidden>
+  <div class="card modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Sign In</h3>
+    <form id="authForm" autocomplete="off">
+      <p class="muted" id="authHint" hidden></p>
+      <label id="userWrap"><span>Username</span><input id="authUser" required minlength="3" maxlength="20"></label>
+      <label id="passWrap"><span id="passLabel">Password</span><input id="authPass" type="password" required minlength="4"></label>
+      <p class="error" id="authErr" role="alert"></p><p class="okmsg" id="authMsg" role="status"></p>
+      <button class="btn" type="submit" id="authSubmit">Sign In</button>
+    </form>
+    <p class="muted switch"><span id="switchText">New here?</span> <a href="#" id="switchMode">Sign Up</a></p>
+    <p class="muted switch"><a href="#" id="forgotLink">Forgot password?</a></p>
+    <button class="icon-btn close" id="closeModal" aria-label="Close">&times;</button>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
