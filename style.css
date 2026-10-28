@@ -234,3 +234,9 @@ input,select{font-size:16px}
 
 .floating-heart{position:fixed;z-index:100;pointer-events:none;color:var(--pink);font-size:1.2rem;text-shadow:0 2px 8px #ff5c8a44;animation:heart-float 1s ease-out forwards}
 @keyframes heart-float{0%{opacity:0;transform:translateY(8px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-58px) scale(1.2)}}
+
+/* Page-specific placement for test settings and practice sessions */
+.test-controls{margin-bottom:18px}
+.practice-start-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.profile-signout{margin-top:18px}
+@media(max-width:560px){.practice-start-actions .btn{flex:1 1 100%}.test-controls{grid-template-columns:1fr;gap:16px}}

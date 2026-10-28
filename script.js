@@ -145,7 +145,18 @@ function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
   if (reward) heartBurst();
-  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  const hasPractised = scores().some(s => s.practice);
+  $('#continuePractice').hidden = !hasPractised;
+  if (hasPractised) {
+    const lastPractice = scores().find(s => s.practice);
+    if (lastPractice && lastPractice.pmin) {
+      const minutes = lastPractice.pmin;
+      const option = [...$('#practiceSel').options].find(o => +o.value === minutes);
+      if (option) { $('#practiceSel').value = option.value; $('#customWrap').hidden = true; }
+      else { $('#practiceSel').value = 'custom'; $('#customWrap').hidden = false; $('#practiceCustom').value = minutes; }
+    }
+  }
   loadPracticeExercise();
 }
 function loadPracticeExercise() {
@@ -309,7 +320,7 @@ function finish() {
   const p = t.practice, secs = Math.min(t.limit, Math.max(elapsed(), 1));
   const wpm = Math.round(t.ok / 5 / (secs / 60)), acc = t.total ? Math.round(t.hits / t.total * 100) : 0;
   const isBest = !p && wpm > 0 && wpm > best();
-  const list = scores(); list.unshift({ ts: Date.now(), diff: settings.diff, dur: p ? Math.round(secs) : settings.dur, practice: p, wpm, acc, status: p ? 'Practice' : isBest ? 'New best' : 'Completed' });
+  const list = scores(); list.unshift({ ts: Date.now(), diff: settings.diff, dur: p ? Math.round(secs) : settings.dur, pmin: p ? settings.pmin : undefined, practice: p, wpm, acc, status: p ? 'Practice' : isBest ? 'New best' : 'Completed' });
   store.set(scoresKey(), list.slice(0, 200));
   $('#resWpm').textContent = wpm; $('#resAcc').textContent = acc + '%';
   $('#resChars').textContent = t.ok; $('#resMode').textContent = p ? `Practice, ${fmt(secs)}` : `${settings.diff}, ${settings.dur}s`;
@@ -422,10 +433,17 @@ $('#newExercise').onclick = loadPracticeExercise;
 $$('button[data-view="practice"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('practice')));
 $$('button[data-view="guide"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('guide')));
 $('#practiceSel').onchange = () => { $('#customWrap').hidden = $('#practiceSel').value !== 'custom'; $('#practiceErr').textContent = ''; };
-$('#startPractice').onclick = () => {
+function startTimedPractice() {
   const v = $('#practiceSel').value, mins = v === 'custom' ? Number($('#practiceCustom').value) : +v;
   if (!Number.isFinite(mins) || mins < 1 || mins > 600) return $('#practiceErr').textContent = 'Enter a practice time between 1 and 600 minutes.';
   $('#practiceErr').textContent = ''; settings.pmin = Math.round(mins); settings.mode = 'practice'; go('test');
+}
+$('#startPractice').onclick = startTimedPractice;
+$('#continuePractice').onclick = () => {
+  const previous = scores().find(s => s.practice);
+  if (previous && previous.pmin) settings.pmin = previous.pmin;
+  settings.mode = 'practice';
+  go('test');
 };
 $('#stopBtn').onclick = e => { e.currentTarget.blur(); if (!t.started) return go('dashboard'); if (t.paused) togglePause(); finish(); };
 $('#pauseBtn').onclick = e => { e.currentTarget.blur(); togglePause(); };

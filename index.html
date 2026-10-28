@@ -39,7 +39,7 @@
     </div>
     <div id="userActions" class="actions" hidden>
       <button class="btn" id="toDash">Go to Dashboard &rarr;</button>
-      <button class="btn ghost" id="signOut">Sign Out</button>
+      
     </div>
   </section>
 
@@ -47,18 +47,8 @@
     <h2 class="center" id="dashHello">Welcome</h2>
     <div class="mode-cards"><button class="mode-card" id="openPractice"><span class="mode-icon">♡</span><strong>1. Practice</strong><span>Learn finger placement, improve accuracy and earn hearts.</span><em>Start learning →</em></button><button class="mode-card" id="takeTest"><span class="mode-icon">⌁</span><strong>2. Test</strong><span>Take a timed paragraph test and track your WPM.</span><em>Test your speed →</em></button></div>
     <div class="card heart-summary"><span class="heart-symbol">♥</span><span><strong id="dashHearts">0 hearts</strong><small>Keep practising to collect more!</small></span><button class="text-btn" data-view="practice">Earn hearts →</button></div>
-    <div class="card controls">
-      <div><p class="label">Difficulty</p><div class="pills" id="diffPills">
-        <button class="pill" data-diff="Easy">Easy</button><button class="pill" data-diff="Medium">Medium</button><button class="pill" data-diff="Hard">Hard</button></div></div>
-      <div><p class="label">Duration</p><div class="pills" id="durPills">
-        <button class="pill" data-dur="15">15s</button><button class="pill" data-dur="30">30s</button><button class="pill" data-dur="60">60s</button></div></div>
-    </div>
-    <div class="card practice"><div><p class="label">Practice timer</p><p class="muted">Choose how long to practice. A new paragraph arrives whenever you near the end, until the time is up or you stop.</p><p class="error" id="practiceErr" role="alert"></p></div>
-      <div class="practice-ctl">
-        <label>Practice time<select id="practiceSel"><option value="15">15 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="120">2 hours</option><option value="custom">Custom</option></select></label>
-        <label id="customWrap" hidden>Minutes<input id="practiceCustom" type="number" min="1" max="600" step="1" placeholder="e.g. 90"></label>
-        <button class="btn" id="startPractice">Start Practice</button>
-      </div></div>
+
+
     <div class="grid2">
       <div class="card"><p class="label">Target WPM</p><p class="big-num" id="targetWpm">30</p>
         <div class="bar"><i id="targetFill"></i></div><p class="muted" id="targetNote"></p></div>
@@ -75,6 +65,12 @@
       <p class="muted">Build accuracy first. Speed will follow.</p>
     </div>
     <div class="card heart-wallet"><span aria-hidden="true">♡</span><div><p class="label">Your hearts</p><strong id="practiceHearts">0</strong></div><span class="muted">Earn hearts as you practise</span></div>
+    <div class="card practice"><div><p class="label">Practice timer</p><p class="muted">Choose a session length for timed paragraph practice. You can return here and continue whenever you like.</p><p class="error" id="practiceErr" role="alert"></p></div>
+      <div class="practice-ctl">
+        <label>Practice time<select id="practiceSel"><option value="15">15 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="120">2 hours</option><option value="custom">Custom</option></select></label>
+        <label id="customWrap" hidden>Minutes<input id="practiceCustom" type="number" min="1" max="600" step="1" placeholder="e.g. 90"></label>
+        <div class="practice-start-actions"><button class="btn" id="startPractice">Start Practice</button><button class="btn ghost" id="continuePractice" hidden>Continue Practice</button></div>
+      </div></div>
     <div class="card practice-lesson">
       <p class="label">Choose your level</p>
       <div class="pills practice-levels" id="practiceLevels">
@@ -115,6 +111,12 @@
   </section>
 
   <section class="view" id="view-test" hidden>
+    <div class="card controls test-controls">
+      <div><p class="label">Difficulty</p><div class="pills" id="diffPills">
+        <button class="pill" data-diff="Easy">Easy</button><button class="pill" data-diff="Medium">Medium</button><button class="pill" data-diff="Hard">Hard</button></div></div>
+      <div><p class="label">Duration</p><div class="pills" id="durPills">
+        <button class="pill" data-dur="15">15s</button><button class="pill" data-dur="30">30s</button><button class="pill" data-dur="60">60s</button></div></div>
+    </div>
     <div class="hud card">
       <div class="stat"><b id="hudWpm">0</b><span>WPM</span></div>
       <div class="stat"><b id="hudAcc">100%</b><span>Accuracy</span></div>
@@ -186,6 +188,7 @@
       <div class="card"><p class="label">Best WPM</p><p class="big-num" id="profBest">0</p></div>
       <div class="card"><p class="label">Total tests</p><p class="big-num" id="profTotal">0</p></div>
     </div>
+    <div class="card profile-signout"><p class="label">Account</p><p class="muted">Finished for now? You can safely sign out here.</p><button class="btn ghost" id="signOut">Sign Out</button></div>
   </section>
 </main>
 
