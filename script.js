@@ -34,7 +34,7 @@ function go(name) {
   } else if (!prev) show();
 }
 function render(name) {
-  ({ landing: renderLanding, dashboard: renderDash, test: resetTest, streak: renderStreak, profile: renderProfile }[name] || (() => {}))();
+  ({ landing: renderLanding, dashboard: renderDash, practice: renderPractice, guide: () => {}, test: resetTest, streak: renderStreak, profile: renderProfile }[name] || (() => {}))();
 }
 
 /* ---------- chrome / landing ---------- */
@@ -119,6 +119,73 @@ function renderDash() {
   $('#goalFill').style.width = Math.min(100, n / 3 * 100) + '%';
 }
 const todayCount = () => scores().filter(s => new Date(s.ts).toDateString() === new Date().toDateString()).length;
+
+/* ---------- guided practice and heart rewards ---------- */
+const PRACTICE_EXERCISES = {
+  Beginner: [
+    { title: 'Home-row warm-up', text: 'asdf jkl; asdf jkl; fj fj dk dk sl sl', tip: 'Rest your left fingers on A, S, D, F and your right fingers on J, K, L, ;.' },
+    { title: 'Easy words', text: 'sad ask fall dad flask all add', tip: 'Keep your fingers close to the home row and return after reaching for a key.' },
+    { title: 'Short sentence', text: 'A sad lad asks dad.', tip: 'Type gently and use the correct finger rather than stretching one finger across the keyboard.' }
+  ],
+  Medium: [
+    { title: 'Reach and return', text: 'type write quiet power yellow', tip: 'Reach for keys with the assigned finger, then bring it back to its home-row position.' },
+    { title: 'Steady rhythm', text: 'Small steps build steady typing skills.', tip: 'Try to keep a steady rhythm. Accuracy matters more than rushing.' },
+    { title: 'Common words', text: 'people learn better when practice feels calm', tip: 'Look at the text instead of your hands, and relax your shoulders.' }
+  ],
+  Hard: [
+    { title: 'Punctuation practice', text: 'Accuracy first; speed follows.', tip: 'Use the appropriate finger for punctuation and keep your wrists relaxed.' },
+    { title: 'Longer sentence', text: 'Consistent practice helps your fingers find each key without looking.', tip: 'Break the sentence into small chunks and focus on clean keystrokes.' },
+    { title: 'Mixed characters', text: 'In 2026, small habits can improve typing by 10%.', tip: 'Shift gently for capital letters and use the opposite hand for the Shift key when possible.' }
+  ]
+};
+let practiceLevel = 'Beginner', practiceExerciseIndex = -1;
+const heartsKey = () => 'kk_hearts_' + session;
+const hearts = () => store.get(heartsKey(), 0);
+function renderPractice() {
+  $('#practiceHearts').textContent = hearts();
+  $('#dashHearts').textContent = hearts() + ' hearts';
+  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  loadPracticeExercise();
+}
+function loadPracticeExercise() {
+  const list = PRACTICE_EXERCISES[practiceLevel];
+  let n = Math.floor(Math.random() * list.length);
+  if (list.length > 1 && n === practiceExerciseIndex) n = (n + 1) % list.length;
+  practiceExerciseIndex = n;
+  const item = list[n];
+  $('#practiceExerciseTitle').textContent = item.title;
+  $('#practiceLevelTag').textContent = practiceLevel.toUpperCase();
+  $('#practicePrompt').textContent = item.text;
+  $('#practiceInput').value = '';
+  $('#practiceFeedback').hidden = true;
+  $('#practiceInput').focus({ preventScroll: true });
+}
+function checkPractice() {
+  const target = $('#practicePrompt').textContent, typed = $('#practiceInput').value;
+  if (!typed.length) {
+    $('#practiceFeedback').hidden = false;
+    $('#practiceFeedback').innerHTML = '<h3>Start with a few characters 💗</h3><p>Type the exercise above, then check your practice to get helpful feedback.</p>';
+    return;
+  }
+  let correct = 0, errors = 0, wrongKeys = {};
+  for (let i = 0; i < typed.length; i++) {
+    if (typed[i] === target[i]) correct++;
+    else { errors++; const key = target[i] || typed[i]; wrongKeys[key] = (wrongKeys[key] || 0) + 1; }
+  }
+  const accuracy = Math.round(correct / typed.length * 100);
+  const complete = typed === target;
+  const reward = (complete ? 5 : 2) + (accuracy >= 95 ? 10 : 0);
+  store.set(heartsKey(), hearts() + reward);
+  const commonMistake = Object.entries(wrongKeys).sort((a,b) => b[1] - a[1])[0];
+  const feedback = commonMistake
+    ? 'You had the most trouble around "' + commonMistake[0] + '". ' + PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip
+    : PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip;
+  $('#practiceFeedback').hidden = false;
+  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! ♡' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">+' + reward + ' ♥ earned!</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
+  $('#practiceHearts').textContent = hearts();
+  $('#dashHearts').textContent = hearts() + ' hearts';
+}
+
 
 /* ---------- typing test ---------- */
 const PARAS = {
@@ -333,6 +400,12 @@ $('#authForm').onsubmit = submitAuth;
 $('#toDash').onclick = () => go('dashboard');
 $('#signOut').onclick = signOut;
 $('#takeTest').onclick = () => { settings.mode = 'timed'; go('test'); };
+$('#openPractice').onclick = () => go('practice');
+$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
+$('#checkPractice').onclick = checkPractice;
+$('#newExercise').onclick = loadPracticeExercise;
+$('[data-view="practice"]').forEach(b => b.addEventListener('click', () => go('practice')));
+$('[data-view="guide"]').forEach(b => b.addEventListener('click', () => go('guide')));
 $('#practiceSel').onchange = () => { $('#customWrap').hidden = $('#practiceSel').value !== 'custom'; $('#practiceErr').textContent = ''; };
 $('#startPractice').onclick = () => {
   const v = $('#practiceSel').value, mins = v === 'custom' ? Number($('#practiceCustom').value) : +v;
