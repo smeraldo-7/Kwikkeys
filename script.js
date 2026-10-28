@@ -144,6 +144,7 @@ const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
+  if (reward) heartBurst();
   $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   loadPracticeExercise();
 }
@@ -161,6 +162,19 @@ function loadPracticeExercise() {
   $('#practiceFeedback').hidden = true;
   $('#practiceInput').focus({ preventScroll: true });
 }
+function heartBurst() {
+  const anchor = $('#practiceHearts').getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    const heart = document.createElement('span');
+    heart.className = 'floating-heart';
+    heart.textContent = '♥';
+    heart.style.left = (anchor.left + anchor.width / 2 + (Math.random() * 70 - 35)) + 'px';
+    heart.style.top = (anchor.top + 8) + 'px';
+    heart.style.animationDelay = (i * 65) + 'ms';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1100);
+  }
+}
 function checkPractice() {
   const target = $('#practicePrompt').textContent, typed = $('#practiceInput').value;
   if (!typed.length) {
@@ -175,7 +189,7 @@ function checkPractice() {
   }
   const accuracy = Math.round(correct / typed.length * 100);
   const complete = typed === target;
-  const reward = practiceRewarded ? 0 : (complete ? 5 : 2) + (accuracy >= 95 ? 10 : 0);
+  const reward = practiceRewarded ? 0 : (complete ? 5 : 2) + (complete && accuracy >= 95 ? 10 : 0);
   if (!practiceRewarded) { store.set(heartsKey(), hearts() + reward); practiceRewarded = true; }
   const commonMistake = Object.entries(wrongKeys).sort((a,b) => b[1] - a[1])[0];
   const feedback = commonMistake
