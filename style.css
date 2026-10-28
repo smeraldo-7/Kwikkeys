@@ -176,3 +176,61 @@ input,select{font-size:16px}
   #view-landing{padding-top:2vh}.hero{font-size:2.2rem}.sub{margin:8px auto 16px}
   main{padding-top:calc(76px + env(safe-area-inset-top))}.btn.big{margin-bottom:14px}
 }
+
+/* Practice, finger guide and heart rewards */
+.eyebrow{font-size:.76rem;letter-spacing:.14em;font-weight:800;color:var(--pink);margin-bottom:7px}
+.practice-heading{margin-bottom:20px}
+.practice-heading h2{margin-bottom:5px}
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 18px}
+.mode-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:9px;background:#fff;border:1px solid #F2DDE3;border-radius:18px;padding:22px;box-shadow:0 3px 16px #ff5c8a12;transition:var(--t)}
+.mode-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px #ff5c8a24;border-color:var(--pale)}
+.mode-card:active{transform:scale(.985)}
+.mode-card strong{font:700 1.25rem var(--head)}
+.mode-card>span:not(.mode-icon){color:var(--mute);font-size:.9rem}
+.mode-card em{font-style:normal;color:var(--pink);font-weight:700;margin-top:4px}
+.mode-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#FFF0F5;color:var(--pink);font-size:1.8rem}
+.heart-summary,.heart-wallet{display:flex;align-items:center;gap:14px;margin-bottom:18px;border:1px solid #FFD6E2}
+.heart-symbol,.heart-wallet>span:first-child{color:var(--pink);font-size:2rem}
+.heart-summary>span:nth-child(2){display:grid;gap:2px;flex:1}
+.heart-summary small{color:var(--mute)}
+.text-btn{color:var(--pink);font-weight:700}
+.heart-wallet{margin-top:14px}
+.heart-wallet strong{font-size:1.8rem;color:var(--pink)}
+.heart-wallet>span:last-child{margin-left:auto}
+.practice-lesson{margin-bottom:18px}
+.practice-levels{margin-bottom:24px}
+.practice-prompt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 10px}
+.practice-prompt-head h3,.guide-mini h3,.guide-tips h3{font-family:var(--head);font-size:1.15rem}
+.level-tag{font-size:.72rem;font-weight:800;color:var(--pink);background:#FFF0F5;border-radius:8px;padding:6px 9px}
+.exercise-copy{background:#FFF8FA;border:1px dashed #F2DDE3;border-radius:12px;padding:16px;margin-bottom:16px;font:600 1.15rem/1.8 var(--mono);overflow-wrap:anywhere}
+#practiceInput{width:100%;resize:vertical;border:1.5px solid #F2DDE3;border-radius:12px;padding:14px;background:#FFFBFC;color:var(--ink);font:1rem/1.6 var(--mono);margin-top:6px}
+#practiceInput:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 4px #ff5c8a1c}
+.practice-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.practice-feedback{margin-top:18px;padding:16px;border-radius:14px;background:#FFF0F5;border:1px solid #FFD6E2;animation:pop .25s ease}
+.practice-feedback h3{font-family:var(--head);margin-bottom:6px}
+.practice-feedback p{margin:5px 0;color:var(--mute)}
+.practice-feedback .earned{font-weight:800;color:var(--pink);font-size:1.1rem}
+.guide-mini{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.guide-mini>div{flex:1 1 250px}
+.guide-mini p{margin-top:5px}
+.guide-sub{margin:0 0 22px;max-width:650px}
+.finger-guide{margin-bottom:18px;padding:clamp(12px,3vw,24px);overflow:hidden}
+.keyboard-row{display:flex;justify-content:center;gap:5px;margin-bottom:7px}
+.keyboard-row.indent{padding:0 4%}
+.keyboard-row.indent2{padding:0 1%}
+.key{flex:1;max-width:56px;min-width:0;aspect-ratio:1.05;display:grid;place-items:center;border-radius:8px;border:1px solid #F2DDE3;font-weight:800;font-size:clamp(.65rem,2.3vw,1rem);box-shadow:0 3px 0 #F2DDE3}
+.pink-key{background:#FFE4EC;color:#C93C6B}
+.blue-key{background:#F1F0FF;color:#6156A8;border-color:#DDD9FF;box-shadow:0 3px 0 #DDD9FF}
+.home-key{outline:2px solid var(--pink);outline-offset:-4px}
+.keyboard-legend{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin-top:18px;font-size:.82rem;color:var(--mute)}
+.keyboard-legend span{display:flex;align-items:center;gap:6px}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.left-dot{background:#FF9CB8}.right-dot{background:#A9A0F0}
+.home-note{flex-basis:100%;color:var(--pink);font-weight:700}
+.guide-tips{margin-top:18px}
+.guide-tips .card{position:relative;padding-top:28px}
+.tip-number{display:inline-grid;place-items:center;width:30px;height:30px;background:#FFF0F5;border-radius:10px;color:var(--pink);font-weight:800;margin-bottom:10px}
+@media(max-width:640px){.mode-cards{grid-template-columns:1fr}.heart-wallet{align-items:flex-start;flex-wrap:wrap}.heart-wallet>span:last-child{width:100%;margin-left:0}.guide-mini{align-items:flex-start}.keyboard-row{gap:3px}.key{border-radius:5px}.keyboard-legend{font-size:.75rem}}
+
+.floating-heart{position:fixed;z-index:100;pointer-events:none;color:var(--pink);font-size:1.2rem;text-shadow:0 2px 8px #ff5c8a44;animation:heart-float 1s ease-out forwards}
+@keyframes heart-float{0%{opacity:0;transform:translateY(8px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-58px) scale(1.2)}}
