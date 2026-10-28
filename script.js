@@ -145,7 +145,18 @@ function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
   if (reward) heartBurst();
-  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  const hasPractised = scores().some(s => s.practice);
+  $('#continuePractice').hidden = !hasPractised;
+  if (hasPractised) {
+    const lastPractice = scores().find(s => s.practice);
+    if (lastPractice && lastPractice.dur) {
+      const minutes = Math.max(1, Math.round(lastPractice.dur / 60));
+      const option = [...$('#practiceSel').options].find(o => +o.value === minutes);
+      if (option) $('#practiceSel').value = option.value;
+      else { $('#practiceSel').value = 'custom'; $('#customWrap').hidden = false; $('#practiceCustom').value = minutes; }
+    }
+  }
   loadPracticeExercise();
 }
 function loadPracticeExercise() {
@@ -422,10 +433,17 @@ $('#newExercise').onclick = loadPracticeExercise;
 $$('button[data-view="practice"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('practice')));
 $$('button[data-view="guide"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('guide')));
 $('#practiceSel').onchange = () => { $('#customWrap').hidden = $('#practiceSel').value !== 'custom'; $('#practiceErr').textContent = ''; };
-$('#startPractice').onclick = () => {
+function startTimedPractice() {
   const v = $('#practiceSel').value, mins = v === 'custom' ? Number($('#practiceCustom').value) : +v;
   if (!Number.isFinite(mins) || mins < 1 || mins > 600) return $('#practiceErr').textContent = 'Enter a practice time between 1 and 600 minutes.';
   $('#practiceErr').textContent = ''; settings.pmin = Math.round(mins); settings.mode = 'practice'; go('test');
+}
+$('#startPractice').onclick = startTimedPractice;
+$('#continuePractice').onclick = () => {
+  const previous = scores().find(s => s.practice);
+  if (previous && previous.dur) settings.pmin = Math.max(1, Math.round(previous.dur / 60));
+  settings.mode = 'practice';
+  go('test');
 };
 $('#stopBtn').onclick = e => { e.currentTarget.blur(); if (!t.started) return go('dashboard'); if (t.paused) togglePause(); finish(); };
 $('#pauseBtn').onclick = e => { e.currentTarget.blur(); togglePause(); };
