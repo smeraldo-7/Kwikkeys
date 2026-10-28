@@ -150,10 +150,10 @@ function renderPractice() {
   $('#continuePractice').hidden = !hasPractised;
   if (hasPractised) {
     const lastPractice = scores().find(s => s.practice);
-    if (lastPractice && lastPractice.dur) {
-      const minutes = Math.max(1, Math.round(lastPractice.dur / 60));
+    if (lastPractice && lastPractice.pmin) {
+      const minutes = lastPractice.pmin;
       const option = [...$('#practiceSel').options].find(o => +o.value === minutes);
-      if (option) $('#practiceSel').value = option.value;
+      if (option) { $('#practiceSel').value = option.value; $('#customWrap').hidden = true; }
       else { $('#practiceSel').value = 'custom'; $('#customWrap').hidden = false; $('#practiceCustom').value = minutes; }
     }
   }
@@ -320,7 +320,7 @@ function finish() {
   const p = t.practice, secs = Math.min(t.limit, Math.max(elapsed(), 1));
   const wpm = Math.round(t.ok / 5 / (secs / 60)), acc = t.total ? Math.round(t.hits / t.total * 100) : 0;
   const isBest = !p && wpm > 0 && wpm > best();
-  const list = scores(); list.unshift({ ts: Date.now(), diff: settings.diff, dur: p ? Math.round(secs) : settings.dur, practice: p, wpm, acc, status: p ? 'Practice' : isBest ? 'New best' : 'Completed' });
+  const list = scores(); list.unshift({ ts: Date.now(), diff: settings.diff, dur: p ? Math.round(secs) : settings.dur, pmin: p ? settings.pmin : undefined, practice: p, wpm, acc, status: p ? 'Practice' : isBest ? 'New best' : 'Completed' });
   store.set(scoresKey(), list.slice(0, 200));
   $('#resWpm').textContent = wpm; $('#resAcc').textContent = acc + '%';
   $('#resChars').textContent = t.ok; $('#resMode').textContent = p ? `Practice, ${fmt(secs)}` : `${settings.diff}, ${settings.dur}s`;
@@ -441,7 +441,7 @@ function startTimedPractice() {
 $('#startPractice').onclick = startTimedPractice;
 $('#continuePractice').onclick = () => {
   const previous = scores().find(s => s.practice);
-  if (previous && previous.dur) settings.pmin = Math.max(1, Math.round(previous.dur / 60));
+  if (previous && previous.pmin) settings.pmin = previous.pmin;
   settings.mode = 'practice';
   go('test');
 };
