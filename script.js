@@ -138,13 +138,13 @@ const PRACTICE_EXERCISES = {
     { title: 'Mixed characters', text: 'In 2026, small habits can improve typing by 10%.', tip: 'Shift gently for capital letters and use the opposite hand for the Shift key when possible.' }
   ]
 };
-let practiceLevel = 'Beginner', practiceExerciseIndex = -1;
+let practiceLevel = 'Beginner', practiceExerciseIndex = -1, practiceRewarded = false;
 const heartsKey = () => 'kk_hearts_' + session;
 const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
-  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   loadPracticeExercise();
 }
 function loadPracticeExercise() {
@@ -152,6 +152,7 @@ function loadPracticeExercise() {
   let n = Math.floor(Math.random() * list.length);
   if (list.length > 1 && n === practiceExerciseIndex) n = (n + 1) % list.length;
   practiceExerciseIndex = n;
+  practiceRewarded = false;
   const item = list[n];
   $('#practiceExerciseTitle').textContent = item.title;
   $('#practiceLevelTag').textContent = practiceLevel.toUpperCase();
@@ -174,14 +175,14 @@ function checkPractice() {
   }
   const accuracy = Math.round(correct / typed.length * 100);
   const complete = typed === target;
-  const reward = (complete ? 5 : 2) + (accuracy >= 95 ? 10 : 0);
-  store.set(heartsKey(), hearts() + reward);
+  const reward = practiceRewarded ? 0 : (complete ? 5 : 2) + (accuracy >= 95 ? 10 : 0);
+  if (!practiceRewarded) { store.set(heartsKey(), hearts() + reward); practiceRewarded = true; }
   const commonMistake = Object.entries(wrongKeys).sort((a,b) => b[1] - a[1])[0];
   const feedback = commonMistake
     ? 'You had the most trouble around "' + commonMistake[0] + '". ' + PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip
     : PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip;
   $('#practiceFeedback').hidden = false;
-  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! ♡' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">+' + reward + ' ♥ earned!</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
+  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! ♡' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' ♥ earned!' : 'You already earned hearts for this exercise — try a new one to earn more!') + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
 }
@@ -401,11 +402,11 @@ $('#toDash').onclick = () => go('dashboard');
 $('#signOut').onclick = signOut;
 $('#takeTest').onclick = () => { settings.mode = 'timed'; go('test'); };
 $('#openPractice').onclick = () => go('practice');
-$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
+$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
 $('#checkPractice').onclick = checkPractice;
 $('#newExercise').onclick = loadPracticeExercise;
-$('[data-view="practice"]').forEach(b => b.addEventListener('click', () => go('practice')));
-$('[data-view="guide"]').forEach(b => b.addEventListener('click', () => go('guide')));
+$$('button[data-view="practice"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('practice')));
+$$('button[data-view="guide"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('guide')));
 $('#practiceSel').onchange = () => { $('#customWrap').hidden = $('#practiceSel').value !== 'custom'; $('#practiceErr').textContent = ''; };
 $('#startPractice').onclick = () => {
   const v = $('#practiceSel').value, mins = v === 'custom' ? Number($('#practiceCustom').value) : +v;
