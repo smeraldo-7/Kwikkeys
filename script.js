@@ -144,7 +144,6 @@ const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
-  if (reward) heartBurst();
   $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   const hasPractised = scores().some(s => s.practice);
   $('#continuePractice').hidden = !hasPractised;
