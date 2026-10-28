@@ -144,7 +144,9 @@ const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#dashHearts').textContent = hearts() + ' hearts';
-$$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));  $('#continuePractice').hidden = !hasPractised;
+  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  const hasPractised = scores().some(s => s.practice);
+  $('#continuePractice').hidden = !hasPractised;
   if (hasPractised) {
     const lastPractice = scores().find(s => s.practice);
     if (lastPractice && lastPractice.pmin) {
