@@ -231,3 +231,6 @@ input,select{font-size:16px}
 .guide-tips .card{position:relative;padding-top:28px}
 .tip-number{display:inline-grid;place-items:center;width:30px;height:30px;background:#FFF0F5;border-radius:10px;color:var(--pink);font-weight:800;margin-bottom:10px}
 @media(max-width:640px){.mode-cards{grid-template-columns:1fr}.heart-wallet{align-items:flex-start;flex-wrap:wrap}.heart-wallet>span:last-child{width:100%;margin-left:0}.guide-mini{align-items:flex-start}.keyboard-row{gap:3px}.key{border-radius:5px}.keyboard-legend{font-size:.75rem}}
+
+.floating-heart{position:fixed;z-index:100;pointer-events:none;color:var(--pink);font-size:1.2rem;text-shadow:0 2px 8px #ff5c8a44;animation:heart-float 1s ease-out forwards}
+@keyframes heart-float{0%{opacity:0;transform:translateY(8px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-58px) scale(1.2)}}
