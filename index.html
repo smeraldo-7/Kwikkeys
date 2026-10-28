@@ -19,7 +19,9 @@
 <aside id="sidebar" aria-label="Menu">
   <a href="#" class="brand side-brand"><span class="logo" aria-hidden="true"></span><span>KwikKeys</span></a>
   <nav>
-    <button class="nav-link" data-view="dashboard">Take Test</button>
+    <button class="nav-link" data-view="dashboard">Test Dashboard</button>
+    <button class="nav-link" data-view="practice">Practice</button>
+    <button class="nav-link" data-view="guide">Finger Guide</button>
     <button class="nav-link" data-view="streak">Streak</button>
     <button class="nav-link" data-view="howto">How to Play</button>
   </nav>
@@ -43,7 +45,8 @@
 
   <section class="view" id="view-dashboard" hidden>
     <h2 class="center" id="dashHello">Welcome</h2>
-    <div class="center"><button class="btn big" id="takeTest">Take Test</button></div>
+    <div class="mode-cards"><button class="mode-card" id="openPractice"><span class="mode-icon">♡</span><strong>1. Practice</strong><span>Learn finger placement, improve accuracy and earn hearts.</span><em>Start learning →</em></button><button class="mode-card" id="takeTest"><span class="mode-icon">⌁</span><strong>2. Test</strong><span>Take a timed paragraph test and track your WPM.</span><em>Test your speed →</em></button></div>
+    <div class="card heart-summary"><span class="heart-symbol">♥</span><span><strong id="dashHearts">0 hearts</strong><small>Keep practising to collect more!</small></span><button class="text-btn" data-view="practice">Earn hearts →</button></div>
     <div class="card controls">
       <div><p class="label">Difficulty</p><div class="pills" id="diffPills">
         <button class="pill" data-diff="Easy">Easy</button><button class="pill" data-diff="Medium">Medium</button><button class="pill" data-diff="Hard">Hard</button></div></div>
@@ -62,6 +65,53 @@
       <div class="card"><p class="label">Daily practice goal</p><p class="big-num" id="goalNum">0 / 3</p>
         <div class="bar"><i id="goalFill"></i></div><p class="muted">Complete 3 tests today.</p></div>
     </div>
+  </section>
+
+  
+  <section class="view" id="view-practice" hidden>
+    <div class="practice-heading">
+      <p class="eyebrow">LEARN AT YOUR OWN PACE</p>
+      <h2>Practice makes progress <span aria-hidden="true">♡</span></h2>
+      <p class="muted">Build accuracy first. Speed will follow.</p>
+    </div>
+    <div class="card heart-wallet"><span aria-hidden="true">♡</span><div><p class="label">Your hearts</p><strong id="practiceHearts">0</strong></div><span class="muted">Earn hearts as you practise</span></div>
+    <div class="card practice-lesson">
+      <p class="label">Choose your level</p>
+      <div class="pills practice-levels" id="practiceLevels">
+        <button class="pill" data-practice-level="Beginner" aria-pressed="true">Beginner</button>
+        <button class="pill" data-practice-level="Medium" aria-pressed="false">Medium</button>
+        <button class="pill" data-practice-level="Hard" aria-pressed="false">Hard</button>
+      </div>
+      <div class="practice-prompt-head"><div><p class="label">Your exercise</p><h3 id="practiceExerciseTitle">Home-row warm-up</h3></div><span class="level-tag" id="practiceLevelTag">BEGINNER</span></div>
+      <p class="exercise-copy" id="practicePrompt">asdf jkl; asdf jkl; fj fj dk dk sl sl</p>
+      <label for="practiceInput">Type the exercise here</label>
+      <textarea id="practiceInput" rows="3" placeholder="Start typing here…" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      <div class="practice-actions"><button class="btn" id="checkPractice">Check my practice</button><button class="btn ghost" id="newExercise">New exercise</button></div>
+      <div id="practiceFeedback" class="practice-feedback" aria-live="polite" hidden></div>
+    </div>
+    <div class="card guide-mini">
+      <div><p class="label">Need a hand?</p><h3>Learn where your fingers belong</h3><p class="muted">See the home row, finger zones and posture tips whenever you need them.</p></div>
+      <button class="btn ghost" data-view="guide">Open finger guide →</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-guide" hidden>
+    <p class="eyebrow">YOUR KEYBOARD MAP</p>
+    <h2>Finger placement guide</h2>
+    <p class="sub guide-sub">Start with the home row. Let each finger handle its own group of keys, and keep your eyes on the screen.</p>
+    <div class="card finger-guide">
+      <div class="keyboard-row"><span class="key pink-key">Q</span><span class="key pink-key">W</span><span class="key pink-key">E</span><span class="key pink-key">R</span><span class="key pink-key">T</span><span class="key blue-key">Y</span><span class="key blue-key">U</span><span class="key blue-key">I</span><span class="key blue-key">O</span><span class="key blue-key">P</span></div>
+      <div class="keyboard-row indent"><span class="key pink-key">A</span><span class="key pink-key home-key">S</span><span class="key pink-key home-key">D</span><span class="key pink-key home-key">F</span><span class="key blue-key home-key">J</span><span class="key blue-key home-key">K</span><span class="key blue-key home-key">L</span><span class="key blue-key">;</span></div>
+      <div class="keyboard-row indent2"><span class="key pink-key">Z</span><span class="key pink-key">X</span><span class="key pink-key">C</span><span class="key pink-key">V</span><span class="key pink-key">B</span><span class="key blue-key">N</span><span class="key blue-key">M</span><span class="key blue-key">,</span><span class="key blue-key">.</span><span class="key blue-key">/</span></div>
+      <div class="keyboard-legend"><span><i class="legend-dot left-dot"></i> Left hand</span><span><i class="legend-dot right-dot"></i> Right hand</span><span class="home-note">F and J have tiny bumps — feel for them!</span></div>
+    </div>
+    <div class="grid2 guide-tips">
+      <div class="card"><span class="tip-number">01</span><h3>Rest on the home row</h3><p class="muted">Left fingers rest on A, S, D, F. Right fingers rest on J, K, L, and ;. Thumbs rest lightly near the spacebar.</p></div>
+      <div class="card"><span class="tip-number">02</span><h3>Use the closest finger</h3><p class="muted">Reach up or down with the finger assigned to that key, then return to the home row.</p></div>
+      <div class="card"><span class="tip-number">03</span><h3>Relax your hands</h3><p class="muted">Keep wrists relaxed, shoulders easy, and press keys gently. Take a short break if you feel strain.</p></div>
+      <div class="card"><span class="tip-number">04</span><h3>Accuracy before speed</h3><p class="muted">Practise slowly enough to stay accurate. Speed grows naturally as the finger movements become familiar.</p></div>
+    </div>
+    <div class="center"><button class="btn" data-view="practice">Practise these keys →</button></div>
   </section>
 
   <section class="view" id="view-test" hidden>
