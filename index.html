@@ -82,9 +82,25 @@
       <div class="live-finger-panel">
         <div class="live-finger-head"><div><p class="label">Live finger guide</p><p class="muted">Optional visual help while you type</p></div><label class="toggle-label"><input id="liveFingerToggle" type="checkbox"><span>Turn on</span></label></div>
         <div id="liveFingerGuide" class="live-finger-guide" hidden aria-live="polite">
-          <div class="hand-illustration" id="leftHand" aria-label="Left hand"><div class="hand-shape"><i class="finger finger-pinky"></i><i class="finger finger-ring"></i><i class="finger finger-middle"></i><i class="finger finger-index"></i><i class="finger finger-thumb"></i><b></b></div><small>LEFT HAND</small></div>
-          <div class="finger-target"><small>USE THIS HAND</small><strong id="fingerTargetKey">—</strong><span id="fingerTargetText">Start typing to see the suggested finger</span></div>
-          <div class="hand-illustration" id="rightHand" aria-label="Right hand"><div class="hand-shape"><i class="finger finger-thumb"></i><i class="finger finger-index"></i><i class="finger finger-middle"></i><i class="finger finger-ring"></i><i class="finger finger-pinky"></i><b></b></div><small>RIGHT HAND</small></div>
+          <p class="finger-instruction">Type the <kbd id="fingerTargetKey">J</kbd> key using your <strong id="fingerTargetText">right index finger</strong>.</p>
+          <div class="tutor-board">
+            <div class="tutor-keyboard" id="tutorKeyboard" aria-label="Keyboard diagram">
+              <div class="tutor-row" data-row="top"></div><div class="tutor-row" data-row="home"></div><div class="tutor-row" data-row="bottom"></div><div class="tutor-row" data-row="space"></div>
+            </div>
+            <svg class="tutor-hands" viewBox="0 0 600 280" role="img" aria-label="Illustration of both hands with the recommended finger highlighted">
+              <g class="tutor-hand" id="leftHand">
+                <path class="hand-palm" d="M42 280 L60 224 Q66 202 66 177 L76 119 Q80 97 91 99 Q101 101 100 123 L97 151 L111 92 Q116 73 128 78 Q140 82 136 101 L124 145 L143 91 Q148 75 160 81 Q172 87 166 105 L151 149 L169 119 Q179 105 189 115 Q199 124 190 140 L174 176 Q169 190 174 211 L197 280 Z"/>
+                <path class="finger-line" d="M97 151 L102 111 M124 145 L132 95 M151 149 L160 100 M174 176 L185 133"/>
+                <circle class="finger-dot" data-finger="pinky" cx="94" cy="116" r="8"/><circle class="finger-dot" data-finger="ring" cx="127" cy="98" r="8"/><circle class="finger-dot" data-finger="middle" cx="158" cy="98" r="8"/><circle class="finger-dot" data-finger="index" cx="184" cy="132" r="8"/><circle class="finger-dot" data-finger="thumb" cx="174" cy="191" r="8"/>
+              </g>
+              <g class="tutor-hand" id="rightHand" transform="translate(600 0) scale(-1 1)">
+                <path class="hand-palm" d="M42 280 L60 224 Q66 202 66 177 L76 119 Q80 97 91 99 Q101 101 100 123 L97 151 L111 92 Q116 73 128 78 Q140 82 136 101 L124 145 L143 91 Q148 75 160 81 Q172 87 166 105 L151 149 L169 119 Q179 105 189 115 Q199 124 190 140 L174 176 Q169 190 174 211 L197 280 Z"/>
+                <path class="finger-line" d="M97 151 L102 111 M124 145 L132 95 M151 149 L160 100 M174 176 L185 133"/>
+                <circle class="finger-dot" data-finger="pinky" cx="94" cy="116" r="8"/><circle class="finger-dot" data-finger="ring" cx="127" cy="98" r="8"/><circle class="finger-dot" data-finger="middle" cx="158" cy="98" r="8"/><circle class="finger-dot" data-finger="index" cx="184" cy="132" r="8"/><circle class="finger-dot" data-finger="thumb" cx="174" cy="191" r="8"/>
+              </g>
+            </svg>
+          </div>
+          <div class="tutor-progress"><button class="tutor-nav" id="fingerPrevious" type="button">Previous</button><div class="tutor-progress-track"><i id="fingerProgress"></i></div><button class="tutor-nav" id="fingerSkip" type="button">Skip</button></div>
         </div>
       </div>
       <p class="exercise-copy" id="practicePrompt">asdf jkl; asdf jkl; fj fj dk dk sl sl</p>
