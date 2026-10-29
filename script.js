@@ -151,16 +151,16 @@ function resetPracticeStopwatch() {
 }
 function fingerForKey(char) {
   const k = (char || '').toLowerCase();
-  if ('qaz'.includes(k)) return ['left','Left pinky'];
-  if ('wsx'.includes(k)) return ['left','Left ring finger'];
-  if ('edc'.includes(k)) return ['left','Left middle finger'];
-  if ('rfvtgb'.includes(k)) return ['left','Left index finger'];
-  if ('yhnujm'.includes(k)) return ['right','Right index finger'];
-  if ('ik,'.includes(k)) return ['right','Right middle finger'];
-  if ('ol.'.includes(k)) return ['right','Right ring finger'];
-  if ('p;/'.includes(k)) return ['right','Right pinky'];
-  if (k === ' ') return ['both','Thumbs'];
-  return ['both','Use the appropriate finger'];
+  if ('qaz'.includes(k)) return ['left','Left pinky','pinky'];
+  if ('wsx'.includes(k)) return ['left','Left ring finger','ring'];
+  if ('edc'.includes(k)) return ['left','Left middle finger','middle'];
+  if ('rfvtgb'.includes(k)) return ['left','Left index finger','index'];
+  if ('yhnujm'.includes(k)) return ['right','Right index finger','index'];
+  if ('ik,'.includes(k)) return ['right','Right middle finger','middle'];
+  if ('ol.'.includes(k)) return ['right','Right ring finger','ring'];
+  if ('p;/'.includes(k)) return ['right','Right pinky','pinky'];
+  if (k === ' ') return ['both','Thumbs','thumb'];
+  return ['both','Use the appropriate finger',''];
 }
 function updateLiveFingerGuide() {
   const enabled = $('#liveFingerToggle').checked;
@@ -169,11 +169,14 @@ function updateLiveFingerGuide() {
   const typed = $('#practiceInput').value;
   const target = $('#practicePrompt').textContent;
   const nextChar = target[typed.length] || '';
-  const [hand, finger] = fingerForKey(nextChar);
+  const [hand, finger, fingerName] = fingerForKey(nextChar);
   $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : (nextChar || '✓').toUpperCase();
   $('#fingerTargetText').textContent = nextChar ? finger : 'Exercise complete!';
-  $('#leftHand').classList.toggle('hand-active', hand === 'left' || hand === 'both');
-  $('#rightHand').classList.toggle('hand-active', hand === 'right' || hand === 'both');
+  ['leftHand','rightHand'].forEach(id => {
+    const el = $('#' + id);
+    el.classList.toggle('hand-active', hand === 'both' || (hand === 'left' && id === 'leftHand') || (hand === 'right' && id === 'rightHand'));
+    el.querySelectorAll('.finger').forEach(f => f.classList.toggle('finger-active', el.classList.contains('hand-active') && f.classList.contains('finger-' + fingerName)));
+  });
 }
 const heartsKey = () => 'kk_hearts_' + session;
 const hearts = () => store.get(heartsKey(), 0);
@@ -253,7 +256,7 @@ function checkPractice() {
     ? 'You had the most trouble around "' + commonMistake[0] + '". ' + PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip
     : PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip;
   $('#practiceFeedback').hidden = false;
-  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! 𖹭' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' 𖹭 earned!' : 'You already earned hearts for this exercise — try a new one to earn more!') + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
+  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! 𖹭' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' 𖹭 earned!' : (complete ? 'You already earned hearts for this exercise — try a new one to earn more!' : 'Finish the full exercise to earn hearts.')) + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
   $('#practiceHearts').textContent = hearts();
   $('#topHearts').textContent = hearts();
 }
