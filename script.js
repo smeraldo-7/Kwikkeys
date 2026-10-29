@@ -135,11 +135,54 @@ const PRACTICE_EXERCISES = {
   ]
 };
 let practiceLevel = 'Beginner', practiceExerciseIndex = -1, practiceRewarded = false;
+let practiceStartedAt = null, practiceStopwatchInterval = null;
+function formatPracticeTime(ms) {
+  const total = Math.floor(ms / 1000);
+  return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+}
+function updatePracticeStopwatch() {
+  $('#practiceStopwatch').textContent = formatPracticeTime(practiceStartedAt ? Date.now() - practiceStartedAt : 0);
+}
+function resetPracticeStopwatch() {
+  practiceStartedAt = null;
+  clearInterval(practiceStopwatchInterval);
+  practiceStopwatchInterval = null;
+  updatePracticeStopwatch();
+}
+function fingerForKey(char) {
+  const k = (char || '').toLowerCase();
+  if ('qaz'.includes(k)) return ['left','Left pinky'];
+  if ('wsx'.includes(k)) return ['left','Left ring finger'];
+  if ('edc'.includes(k)) return ['left','Left middle finger'];
+  if ('rfvtgb'.includes(k)) return ['left','Left index finger'];
+  if ('yhnujm'.includes(k)) return ['right','Right index finger'];
+  if ('ik,'.includes(k)) return ['right','Right middle finger'];
+  if ('ol.'.includes(k)) return ['right','Right ring finger'];
+  if ('p;/'.includes(k)) return ['right','Right pinky'];
+  if (k === ' ') return ['both','Thumbs'];
+  return ['both','Use the appropriate finger'];
+}
+function updateLiveFingerGuide() {
+  const enabled = $('#liveFingerToggle').checked;
+  $('#liveFingerGuide').hidden = !enabled;
+  if (!enabled) return;
+  const typed = $('#practiceInput').value;
+  const target = $('#practicePrompt').textContent;
+  const nextChar = target[typed.length] || '';
+  const [hand, finger] = fingerForKey(nextChar);
+  $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : (nextChar || '✓').toUpperCase();
+  $('#fingerTargetText').textContent = nextChar ? finger : 'Exercise complete!';
+  $('#leftHand').classList.toggle('hand-active', hand === 'left' || hand === 'both');
+  $('#rightHand').classList.toggle('hand-active', hand === 'right' || hand === 'both');
+}
 const heartsKey = () => 'kk_hearts_' + session;
 const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
   $('#topHearts').textContent = hearts();
+  resetPracticeStopwatch();
+  $('#liveFingerToggle').checked = false;
+  updateLiveFingerGuide();
   const dailyCount = todayCount();
   $('#goalNum').textContent = `${Math.min(dailyCount, 3)} / 3`;
   $('#goalFill').style.width = Math.min(100, dailyCount / 3 * 100) + '%';
@@ -168,6 +211,8 @@ function loadPracticeExercise() {
   $('#practiceLevelTag').textContent = practiceLevel.toUpperCase();
   $('#practicePrompt').textContent = item.text;
   $('#practiceInput').value = '';
+  resetPracticeStopwatch();
+  updateLiveFingerGuide();
   $('#practiceFeedback').hidden = true;
   $('#practiceInput').focus({ preventScroll: true });
 }
@@ -186,6 +231,8 @@ function heartBurst() {
 }
 function checkPractice() {
   const target = $('#practicePrompt').textContent, typed = $('#practiceInput').value;
+  if (typed.length && !practiceStartedAt) { practiceStartedAt = Date.now() - 0; practiceStopwatchInterval = setInterval(updatePracticeStopwatch, 250); }
+  updatePracticeStopwatch();
   if (!typed.length) {
     $('#practiceFeedback').hidden = false;
     $('#practiceFeedback').innerHTML = '<h3>Start with a few characters 💗</h3><p>Type the exercise above, then check your practice to get helpful feedback.</p>';
@@ -198,8 +245,9 @@ function checkPractice() {
   }
   const accuracy = Math.round(correct / typed.length * 100);
   const complete = typed === target;
-  const reward = practiceRewarded ? 0 : (complete ? 5 : 2) + (complete && accuracy >= 95 ? 10 : 0);
-  if (!practiceRewarded) { store.set(heartsKey(), hearts() + reward); practiceRewarded = true; }
+  const reward = (!practiceRewarded && complete) ? 2 + (accuracy >= 95 ? 3 : 0) : 0;
+  if (reward) { store.set(heartsKey(), hearts() + reward); practiceRewarded = true; heartBurst(); }
+  if (complete) { clearInterval(practiceStopwatchInterval); practiceStopwatchInterval = null; }
   const commonMistake = Object.entries(wrongKeys).sort((a,b) => b[1] - a[1])[0];
   const feedback = commonMistake
     ? 'You had the most trouble around "' + commonMistake[0] + '". ' + PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip
@@ -425,8 +473,17 @@ $('#toDash').onclick = () => go('dashboard');
 $('#signOut').onclick = signOut;
 $('#takeTest').onclick = () => { settings.mode = 'timed'; go('test'); };
 $('#openPractice').onclick = () => go('practice');
-$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $$$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
+$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
 $('#checkPractice').onclick = checkPractice;
+$('#liveFingerToggle').onchange = updateLiveFingerGuide;
+$('#practiceInput').addEventListener('input', () => {
+  if ($('#practiceInput').value.length && !practiceStartedAt) {
+    practiceStartedAt = Date.now();
+    practiceStopwatchInterval = setInterval(updatePracticeStopwatch, 250);
+  }
+  updatePracticeStopwatch();
+});
+$('#resetPracticeTimer').onclick = resetPracticeStopwatch;
 $('#newExercise').onclick = loadPracticeExercise;
 $$('button[data-view="practice"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('practice')));
 $$('button[data-view="guide"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('guide')));
