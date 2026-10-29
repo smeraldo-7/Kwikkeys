@@ -184,7 +184,7 @@ function updateLiveFingerGuide() {
   if (!enabled) return;
   const typed = $('#practiceInput').value;
   const target = $('#practicePrompt').textContent;
-  const nextChar = target[typed.length] || fingerLessonKeys[fingerLessonIndex] || 'j';
+  const nextChar = $('#practiceInput').dataset.guideKey || target[typed.length] || fingerLessonKeys[fingerLessonIndex] || 'j';
   const [hand, finger, fingerName] = fingerForKey(nextChar);
   $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : nextChar.toUpperCase();
   $('#fingerTargetText').textContent = nextChar === ' ' ? 'thumb' : finger.replace(/^(Left|Right) /, '').toLowerCase();
@@ -504,6 +504,7 @@ $('#liveFingerToggle').onchange = updateLiveFingerGuide;
 $('#fingerPrevious').onclick = () => { fingerLessonIndex = Math.max(0, fingerLessonIndex - 1); $('#practiceInput').dataset.guideKey = fingerLessonKeys[fingerLessonIndex]; updateLiveFingerGuide(); };
 $('#fingerSkip').onclick = () => { fingerLessonIndex = (fingerLessonIndex + 1) % fingerLessonKeys.length; $('#practiceInput').dataset.guideKey = fingerLessonKeys[fingerLessonIndex]; updateLiveFingerGuide(); };
 $('#practiceInput').addEventListener('input', () => {
+  delete $('#practiceInput').dataset.guideKey;
   if ($('#practiceInput').value.length && !practiceStartedAt) {
     practiceStartedAt = Date.now();
     practiceStopwatchInterval = setInterval(updatePracticeStopwatch, 250);
