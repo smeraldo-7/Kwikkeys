@@ -10,6 +10,7 @@ button,input,label.btn{font:inherit}
 button{cursor:pointer;border:0;background:none;color:inherit}
 :focus-visible{outline:2px solid var(--pink);outline-offset:3px}
 .topbar{position:fixed;inset:0 0 auto 0;height:64px;display:flex;align-items:center;gap:14px;padding:0 18px;z-index:20}
+.top-hearts{margin-left:auto;display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid #FFD6E2;border-radius:999px;background:#fff;box-shadow:0 3px 12px #ff5c8a12;color:var(--pink);font-size:.9rem;white-space:nowrap}.top-hearts strong{font-size:1rem;color:var(--ink)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.3rem;color:var(--ink);text-decoration:none}
 .logo{position:relative;width:30px;height:32px;display:inline-block}
 .logo::before{content:"K";position:absolute;left:0;top:-4px;font:800 34px/1 var(--head);color:var(--pink)}
@@ -181,7 +182,7 @@ input,select{font-size:16px}
 .eyebrow{font-size:.76rem;letter-spacing:.14em;font-weight:800;color:var(--pink);margin-bottom:7px}
 .practice-heading{margin-bottom:20px}
 .practice-heading h2{margin-bottom:5px}
-.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 18px}
+.mode-cards{display:grid;grid-template-columns:1fr;gap:16px;margin:0 auto 18px;max-width:620px}
 .mode-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:9px;background:#fff;border:1px solid #F2DDE3;border-radius:18px;padding:22px;box-shadow:0 3px 16px #ff5c8a12;transition:var(--t)}
 .mode-card:hover{transform:translateY(-4px);box-shadow:0 10px 24px #ff5c8a24;border-color:var(--pale)}
 .mode-card:active{transform:scale(.985)}
@@ -240,3 +241,12 @@ input,select{font-size:16px}
 .practice-start-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .profile-signout{margin-top:18px}
 @media(max-width:560px){.practice-start-actions .btn{flex:1 1 100%}.test-controls{grid-template-columns:1fr;gap:16px}}
+
+/* Clean dashboard and always-visible heart balance */
+#view-dashboard .center{margin-bottom:20px}
+.mode-card{min-height:150px}
+.daily-goal-card{display:flex;align-items:center;gap:24px;margin-bottom:18px;border:1px solid #FFD6E2}
+.daily-goal-copy{min-width:155px}
+.daily-goal-copy strong{display:block;color:var(--pink);font-size:1.7rem;line-height:1.25;margin:3px 0}
+.daily-goal-card .bar{flex:1}
+@media(max-width:560px){.topbar{gap:10px;padding-left:12px;padding-right:12px}.top-hearts{padding:6px 9px;font-size:.8rem}.daily-goal-card{align-items:stretch;flex-direction:column;gap:10px}.daily-goal-copy{min-width:0}.mode-card{min-height:138px;padding:20px}}
