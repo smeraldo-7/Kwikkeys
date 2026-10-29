@@ -269,7 +269,17 @@ input,select{font-size:16px}
 .toggle-label input{accent-color:var(--pink);width:18px;height:18px}
 .live-finger-guide{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:8px;align-items:center;margin-top:14px;text-align:center}
 .hand-illustration{border:1px solid #F2DDE3;border-radius:14px;padding:12px 4px;opacity:.48;transition:opacity .2s,transform .2s,background .2s}
-.hand-illustration span{font-size:clamp(2.1rem,8vw,3.6rem);display:block;filter:grayscale(.35)}
+.hand-shape{height:72px;max-width:104px;margin:0 auto 8px;position:relative;display:flex;align-items:flex-start;justify-content:center;gap:3px;padding-top:2px}
+.hand-shape .finger{display:block;width:13px;height:38px;border-radius:10px 10px 5px 5px;background:#F5C8D7;border:1px solid #E8A8BE;transition:background .2s,transform .2s,box-shadow .2s}
+.hand-shape .finger-pinky{height:27px;margin-top:11px}
+.hand-shape .finger-ring{height:36px;margin-top:3px}
+.hand-shape .finger-middle{height:42px}
+.hand-shape .finger-index{height:37px;margin-top:3px}
+.hand-shape .finger-thumb{height:25px;transform:rotate(-35deg);transform-origin:bottom center;margin:23px 1px 0}
+.hand-shape b{position:absolute;width:58px;height:34px;bottom:0;left:50%;transform:translateX(-50%);border-radius:12px 12px 16px 16px;background:#F5C8D7;border:1px solid #E8A8BE;z-index:0}
+.hand-shape .finger{z-index:1}
+.hand-shape .finger-active{background:#FF5C8A;border-color:#D83F72;box-shadow:0 0 0 3px #FF5C8A2b;transform:translateY(-4px)}
+.hand-shape .finger-thumb.finger-active{transform:rotate(-35deg) translateY(-4px)}
 .hand-illustration small,.finger-target small{display:block;font-size:.65rem;letter-spacing:.08em;color:var(--mute);font-weight:800;margin-top:5px}
 .hand-illustration.hand-active{opacity:1;transform:translateY(-3px);background:#FFF0F5;border-color:#FFB9CE;box-shadow:0 5px 16px #ff5c8a16}
 .finger-target{min-width:0}
