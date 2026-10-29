@@ -176,7 +176,7 @@ function heartBurst() {
   for (let i = 0; i < 5; i++) {
     const heart = document.createElement('span');
     heart.className = 'floating-heart';
-    heart.textContent = '♥';
+    heart.textContent = '𖹭';
     heart.style.left = (anchor.left + anchor.width / 2 + (Math.random() * 70 - 35)) + 'px';
     heart.style.top = (anchor.top + 8) + 'px';
     heart.style.animationDelay = (i * 65) + 'ms';
@@ -205,7 +205,7 @@ function checkPractice() {
     ? 'You had the most trouble around "' + commonMistake[0] + '". ' + PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip
     : PRACTICE_EXERCISES[practiceLevel][practiceExerciseIndex].tip;
   $('#practiceFeedback').hidden = false;
-  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! ♡' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' ♥ earned!' : 'You already earned hearts for this exercise — try a new one to earn more!') + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
+  $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! 𖹭' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' 𖹭 earned!' : 'You already earned hearts for this exercise — try a new one to earn more!') + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
   $('#practiceHearts').textContent = hearts();
   $('#topHearts').textContent = hearts();
 }
