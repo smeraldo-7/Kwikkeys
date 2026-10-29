@@ -42,6 +42,8 @@ function updateChrome() {
   const u = user(), av = $('#sideAvatar');
   $('#sideName').textContent = u ? u.name : 'Guest';
   setAvatar(av, u);
+  $('#topHeartCount').hidden = !u;
+  $('#topHearts').textContent = u ? hearts() : 0;
 }
 function setAvatar(el, u) {
   if (u && u.avatar) { el.style.backgroundImage = `url(${u.avatar})`; el.textContent = ''; }
@@ -108,15 +110,9 @@ function signOut() {
 /* ---------- dashboard ---------- */
 function renderDash() {
   $('#dashHello').textContent = `Welcome, ${user().name}`;
-  $$('[data-diff]').forEach(b => b.setAttribute('aria-pressed', b.dataset.diff === settings.diff));
-  $$('[data-dur]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.dur === settings.dur));
-  const b = best(), target = Math.max(30, Math.ceil((b + 5) / 5) * 5);
-  $('#targetWpm').textContent = target;
-  $('#targetFill').style.width = Math.min(100, b / target * 100) + '%';
-  $('#targetNote').textContent = b ? `Your best is ${b} WPM.` : 'Take a test to set your best.';
-  const n = todayCount();
-  $('#goalNum').textContent = `${Math.min(n, 3)} / 3`;
-  $('#goalFill').style.width = Math.min(100, n / 3 * 100) + '%';
+  $('#topHearts').textContent = hearts();
+  $('[data-diff]').forEach(b => b.setAttribute('aria-pressed', b.dataset.diff === settings.diff));
+  $('[data-dur]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.dur === settings.dur));
 }
 const todayCount = () => scores().filter(s => new Date(s.ts).toDateString() === new Date().toDateString()).length;
 
@@ -143,8 +139,11 @@ const heartsKey = () => 'kk_hearts_' + session;
 const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
   $('#practiceHearts').textContent = hearts();
-  $('#dashHearts').textContent = hearts() + ' hearts';
-  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $('#topHearts').textContent = hearts();
+  const dailyCount = todayCount();
+  $('#goalNum').textContent = `${Math.min(dailyCount, 3)} / 3`;
+  $('#goalFill').style.width = Math.min(100, dailyCount / 3 * 100) + '%';
+  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   const hasPractised = scores().some(s => s.practice);
   $('#continuePractice').hidden = !hasPractised;
   if (hasPractised) {
@@ -208,7 +207,7 @@ function checkPractice() {
   $('#practiceFeedback').hidden = false;
   $('#practiceFeedback').innerHTML = '<h3>' + (accuracy >= 95 ? 'Lovely accuracy! ♡' : 'Good effort — keep going!') + '</h3><p>Accuracy: <strong>' + accuracy + '%</strong> · Correct characters: <strong>' + correct + '</strong> · Mistakes: <strong>' + errors + '</strong></p><p>' + feedback.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p><p class="earned">' + (reward ? '+' + reward + ' ♥ earned!' : 'You already earned hearts for this exercise — try a new one to earn more!') + '</p><p>Tip: retry the same exercise slowly to build muscle memory.</p>';
   $('#practiceHearts').textContent = hearts();
-  $('#dashHearts').textContent = hearts() + ' hearts';
+  $('#topHearts').textContent = hearts();
 }
 
 
