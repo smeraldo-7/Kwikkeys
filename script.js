@@ -111,8 +111,8 @@ function signOut() {
 function renderDash() {
   $('#dashHello').textContent = `Welcome, ${user().name}`;
   $('#topHearts').textContent = hearts();
-  $('[data-diff]').forEach(b => b.setAttribute('aria-pressed', b.dataset.diff === settings.diff));
-  $('[data-dur]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.dur === settings.dur));
+  $$('[data-diff]').forEach(b => b.setAttribute('aria-pressed', b.dataset.diff === settings.diff));
+  $$('[data-dur]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.dur === settings.dur));
 }
 const todayCount = () => scores().filter(s => new Date(s.ts).toDateString() === new Date().toDateString()).length;
 
@@ -143,7 +143,7 @@ function renderPractice() {
   const dailyCount = todayCount();
   $('#goalNum').textContent = `${Math.min(dailyCount, 3)} / 3`;
   $('#goalFill').style.width = Math.min(100, dailyCount / 3 * 100) + '%';
-  $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   const hasPractised = scores().some(s => s.practice);
   $('#continuePractice').hidden = !hasPractised;
   if (hasPractised) {
@@ -425,7 +425,7 @@ $('#toDash').onclick = () => go('dashboard');
 $('#signOut').onclick = signOut;
 $('#takeTest').onclick = () => { settings.mode = 'timed'; go('test'); };
 $('#openPractice').onclick = () => go('practice');
-$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
+$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $$$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
 $('#checkPractice').onclick = checkPractice;
 $('#newExercise').onclick = loadPracticeExercise;
 $$('button[data-view="practice"]:not(.nav-link)').forEach(b => b.addEventListener('click', () => go('practice')));
