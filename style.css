@@ -250,3 +250,9 @@ input,select{font-size:16px}
 .daily-goal-copy strong{display:block;color:var(--pink);font-size:1.7rem;line-height:1.25;margin:3px 0}
 .daily-goal-card .bar{flex:1}
 @media(max-width:560px){.topbar{gap:10px;padding-left:12px;padding-right:12px}.top-hearts{padding:6px 9px;font-size:.8rem}.daily-goal-card{align-items:stretch;flex-direction:column;gap:10px}.daily-goal-copy{min-width:0}.mode-card{min-height:138px;padding:20px}}
+
+/* Wider outlined heart glyph requested for KwikKeys */
+.heart-glyph{display:inline-block;transform:scaleX(1.32);transform-origin:center;line-height:1}
+.top-hearts>.heart-glyph{font-size:1.25rem;margin-right:3px;color:var(--pink)}
+.heart-wallet>.heart-glyph{font-size:2rem;margin:0 4px 0 2px;color:var(--pink)}
+.mode-icon.heart-glyph{font-size:1.8rem}
