@@ -188,7 +188,7 @@ function updateLiveFingerGuide() {
   const [hand, finger, fingerName] = fingerForKey(nextChar);
   $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : nextChar.toUpperCase();
   $('#fingerTargetText').textContent = nextChar === ' ' ? 'thumb' : finger.replace(/^(Left|Right) /, '').toLowerCase();
-  $('.tutor-key').forEach(key => key.classList.toggle('target-key', key.dataset.key === nextChar));
+  $$('.tutor-key').forEach(key => key.classList.toggle('target-key', key.dataset.key === nextChar));
   ['leftHand','rightHand'].forEach(id => {
     const el = $('#' + id);
     const active = hand === 'both' || (hand === 'left' && id === 'leftHand') || (hand === 'right' && id === 'rightHand');
@@ -211,7 +211,7 @@ function renderPractice() {
   const dailyCount = todayCount();
   $('#goalNum').textContent = `${Math.min(dailyCount, 3)} / 3`;
   $('#goalFill').style.width = Math.min(100, dailyCount / 3 * 100) + '%';
-  $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
+  $$$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel));
   const hasPractised = scores().some(s => s.practice);
   $('#continuePractice').hidden = !hasPractised;
   if (hasPractised) {
@@ -498,7 +498,7 @@ $('#toDash').onclick = () => go('dashboard');
 $('#signOut').onclick = signOut;
 $('#takeTest').onclick = () => { settings.mode = 'timed'; go('test'); };
 $('#openPractice').onclick = () => go('practice');
-$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
+$('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $$('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
 $('#checkPractice').onclick = checkPractice;
 $('#liveFingerToggle').onchange = updateLiveFingerGuide;
 $('#fingerPrevious').onclick = () => { fingerLessonIndex = Math.max(0, fingerLessonIndex - 1); $('#practiceInput').dataset.guideKey = fingerLessonKeys[fingerLessonIndex]; updateLiveFingerGuide(); };
