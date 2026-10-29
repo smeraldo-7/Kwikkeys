@@ -162,25 +162,47 @@ function fingerForKey(char) {
   if (k === ' ') return ['both','Thumbs','thumb'];
   return ['both','Use the appropriate finger',''];
 }
+const fingerLessonKeys = 'asdfjkl;qwertyuiopzxcvbnm,./'.split('');
+let fingerLessonIndex = 4;
+const tutorKeyRows = {top:'qwertyuiop',home:'asdfghjkl;',bottom:'zxcvbnm,./',space:' '};
+function buildTutorKeyboard() {
+  Object.entries(tutorKeyRows).forEach(([row, letters]) => {
+    const el = document.querySelector('[data-row="' + row + '"]');
+    el.innerHTML = '';
+    [...letters].forEach(ch => {
+      const key = document.createElement('span');
+      key.className = 'tutor-key' + (ch === ' ' ? ' space-key' : '');
+      key.dataset.key = ch;
+      key.textContent = ch === ' ' ? '' : ch;
+      el.appendChild(key);
+    });
+  });
+}
 function updateLiveFingerGuide() {
   const enabled = $('#liveFingerToggle').checked;
   $('#liveFingerGuide').hidden = !enabled;
   if (!enabled) return;
   const typed = $('#practiceInput').value;
   const target = $('#practicePrompt').textContent;
-  const nextChar = target[typed.length] || '';
+  const nextChar = target[typed.length] || fingerLessonKeys[fingerLessonIndex] || 'j';
   const [hand, finger, fingerName] = fingerForKey(nextChar);
-  $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : (nextChar || '✓').toUpperCase();
-  $('#fingerTargetText').textContent = nextChar ? finger : 'Exercise complete!';
+  $('#fingerTargetKey').textContent = nextChar === ' ' ? 'SPACE' : nextChar.toUpperCase();
+  $('#fingerTargetText').textContent = nextChar === ' ' ? 'thumb' : finger.replace(/^(Left|Right) /, '').toLowerCase();
+  $('.tutor-key').forEach(key => key.classList.toggle('target-key', key.dataset.key === nextChar));
   ['leftHand','rightHand'].forEach(id => {
     const el = $('#' + id);
-    el.classList.toggle('hand-active', hand === 'both' || (hand === 'left' && id === 'leftHand') || (hand === 'right' && id === 'rightHand'));
-    el.querySelectorAll('.finger').forEach(f => f.classList.toggle('finger-active', el.classList.contains('hand-active') && f.classList.contains('finger-' + fingerName)));
+    const active = hand === 'both' || (hand === 'left' && id === 'leftHand') || (hand === 'right' && id === 'rightHand');
+    el.classList.toggle('hand-active', active);
+    el.querySelectorAll('.finger-dot').forEach(dot => dot.classList.toggle('finger-active', active && dot.dataset.finger === fingerName));
   });
+  $('#fingerProgress').style.width = ((fingerLessonIndex + 1) / fingerLessonKeys.length * 100) + '%';
+  $('#fingerPrevious').disabled = fingerLessonIndex === 0;
 }
+
 const heartsKey = () => 'kk_hearts_' + session;
 const hearts = () => store.get(heartsKey(), 0);
 function renderPractice() {
+  buildTutorKeyboard();
   $('#practiceHearts').textContent = hearts();
   $('#topHearts').textContent = hearts();
   resetPracticeStopwatch();
@@ -479,6 +501,8 @@ $('#openPractice').onclick = () => go('practice');
 $('#practiceLevels').onclick = e => { const level = e.target.dataset.practiceLevel; if (level && PRACTICE_EXERCISES[level]) { practiceLevel = level; loadPracticeExercise(); $('[data-practice-level]').forEach(b => b.setAttribute('aria-pressed', b.dataset.practiceLevel === practiceLevel)); } };
 $('#checkPractice').onclick = checkPractice;
 $('#liveFingerToggle').onchange = updateLiveFingerGuide;
+$('#fingerPrevious').onclick = () => { fingerLessonIndex = Math.max(0, fingerLessonIndex - 1); $('#practiceInput').dataset.guideKey = fingerLessonKeys[fingerLessonIndex]; updateLiveFingerGuide(); };
+$('#fingerSkip').onclick = () => { fingerLessonIndex = (fingerLessonIndex + 1) % fingerLessonKeys.length; $('#practiceInput').dataset.guideKey = fingerLessonKeys[fingerLessonIndex]; updateLiveFingerGuide(); };
 $('#practiceInput').addEventListener('input', () => {
   if ($('#practiceInput').value.length && !practiceStartedAt) {
     practiceStartedAt = Date.now();
